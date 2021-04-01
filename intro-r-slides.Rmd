@@ -1,0 +1,309 @@
+---
+title: "Intro to R for Data Analysis"
+author: "Kristin Yeager, Manager, Statistical Consulting"
+date: "February 15, 2021"
+output: 
+  ioslides_presentation
+
+    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## In this workshop
+
+- What is R, and why should I use it?
+- What is RStudio, and why should I use it?
+- Preview: The benefits of using R
+- Key terms
+- Worked example of the R workflow
+    - Setting up RStudio project
+    - Importing data
+    - Data cleaning/data management
+    - Data analysis
+
+# What is R? | And why you should use it
+
+## About R <img src="./images/Rlogo.png" width="20%" style="float: right;">
+
+- What it is: Free and open source statistical software and statistical programming language
+- Cost: Free!
+- Operating systems: Windows, Mac, Linux
+- To install: [cran.r-project.org](https://cran.r-project.org/)
+
+## The R user interface
+
+
+<img src="./images/r_ui_labeled.png" width="100%" style="border: 1px solid #000000;">
+
+- The **console** is the "command line" interface part of R -- type code into it, press enter, get results back
+- The console is fine for "playing around", but most of the time, you'll put everything into an **R script** -- a file containing executable R code
+
+## Why use R?
+
+- Free and open-source
+- Reproducibility and _literate statistical programming_ (combining written report with the code used to generate tables, figures, analysis)
+- Beautiful, publication-quality graphics (especially ggplot2)
+- Frequently the first place to find new and cutting-edge statistical methods (even before they're available in big-name stat software programs)
+- Large and active user community
+    - Better free tutorials
+    - Active forums, social media community for seeking help
+    - Opportunities to promote yourself professionally
+
+
+## About RStudio <img src="./images/RStudio-Logo-Flat.png" width="30%" style="float: right;">
+
+- Completely optional but can make writing R code much easier!
+- What it is: Interactive development environment (IDE) for R
+  - View objects in your R environment
+  - Syntax highlighting and auto-completion features
+  - Keyboard shortcuts for writing code
+  - And much, much more
+- Requires R to work -- can't be used without first installing R
+- Cost: Free
+- Operating systems: Windows, Mac, Linux
+- To install: [rstudio.com/products/rstudio/download](https://rstudio.com/products/rstudio/download/)
+
+## The RStudio User Interface
+
+<img src="./images/rstudio_ui_labeled.png" width="100%" style="border: 1px solid #000000;">
+
+## The R Workflow
+
+1. Obtain data and set up project directory
+2. Read/import data into R
+3. Data management
+    - Check data quality
+    - Compute new variables
+    - Filter rows
+    - Select columns
+4. Data analysis
+    - Descriptive statistics
+    - Plots
+    - Statistical tests and models
+
+# Preview: The benefits of using R | Fast-forwarding to when you're using R to its full potential
+
+
+# R syntax | Necessary vocabulary before we can get to the "good stuff"
+
+## Anatomy of a dataset - Data structure
+
+<center><img src="./images/dataset-structure-excel.png" width="70%" style="border: 1px solid #000000;"></center>
+
+- First row contains variable names (no spaces or special characters; numbers, periods, underscores OK; R is case-sensitive)
+- Rows = observations (1 row = 1 respondent or unit)
+- Columns = variables (1 column = 1 distinct variable)
+
+## Objects & Environment
+
+- **Objects** are named "things" you've created in R -- can be manipulated, modified, plotted, etc.
+- Objects are created using the assignment operator: `<-`
+
+Example: Create a new object called `new_object` whose value is equal to a constant:
+```{r eval=FALSE, echo=TRUE}
+new_object <- 10
+```
+
+There are different types of objects in R -- in this session, we'll be focusing on **dataframes** and **vectors**
+
+## Objects & Environment
+- The **environment** is the collection of all R objects that have been defined during the current session <img src="./images/example-r-environment-rstudio.png" width="60%" style="border: 1px solid #000000; float: right;">
+- If you're using RStudio, you can view all objects in the Environment panel 
+- The environment is normally cleared when you close R, but you can choose to save the environment so it still exists the next time you launch R (normally not recommended)
+
+
+## Functions and arguments
+
+- R syntax is generally driven by **functions**, which are pre-programmed tasks that R can do
+- Most (but not all) functions have **arguments** that can modify or control the behavior of the function
+
+Example: Compute the mean of a variable
+```{r eval=FALSE}
+mean(x=mydata$SleepTime, na.rm=TRUE)
+```
+
+- `mean()` is the name of the function
+- `x` and `na.rm` are arguments of `mean()`
+    - `x` is the vector of data to compute the mean of
+    - `na.rm=TRUE` tells R to ignore any missing values in the input vector
+
+
+## Functions and arguments
+
+- You can open a function's documentation page using the function `help()`:
+
+```{r eval=FALSE}
+help("mean")
+help("read.csv")
+```
+
+
+## R packages
+
+- R packages are user-created modules of code intended to fulfill a narrow task or purpose
+- Shared through repositories, of which CRAN is "main" one
+    - See [CRAN Task Views](https://cran.r-project.org/web/views/) to explore R packages by topic
+- An R user "installs" an R package from the online repository to their local package directory using the function `install.packages()`
+- Once a package has been installed, it can be used in your R scripts -- simply load the package using `library()`
+
+
+
+# Worked Example
+
+## Today's sample data
+
+Tutorial sample data:
+
+- Simulated survey dataset we use for our online tutorials
+- n=435 "college students"
+- Available in CSV, TXT, SAS, SPSS formats
+- Download from our website: [libguides.library.kent.edu/SPSS/](https://libguides.library.kent.edu/SPSS/) ([direct download link for CSV](https://libguides.library.kent.edu/ld.php?content_id=60015812))
+
+Research questions we'll consider today:
+
+- Do students who study more get less sleep? (Or: do students who sleep more study less?)
+- Do underclassmen (freshmen and sophomores) get less sleep than upperclassmen (juniors and seniors)?
+
+# Working in R, part 0 | Before you open the program
+
+## Set up your project
+
+Create a project folder on your computer with the following subdirectories:
+
+- project
+   - code
+   - data [raw]
+   - data ["processed"]
+   - plots
+   - output
+   - reports
+
+## RStudio Projects
+
+- Reason to do this: Can declare a folder/directory on your computer as an "RStudio project"
+- Allows you to read and write files using relative paths instead of absolute paths
+
+Example: Absolute file path on Windows: <br/> `"C:/Users/yourusername/yourprojectfolder/data/mydata.csv"`
+
+Example: Absolute file path on Mac: <br/> `"/Users/yourusername/yourprojectfolder/data/mydata.csv"`
+
+
+Example: Relative file path after creating an RStudio project in the "yourprojectfolder" folder: <br/>
+`"data/mydata.csv"`
+
+# Working in R, part 1 | Importing text-based data
+
+## Step 1: Get data into R
+
+- _**Data frames**_ are R's object type for traditional "data sets"
+- Base R function to import text and CSV files as a data frame: `read.table` or `read.csv`
+
+```{r}
+mydata <- read.csv(file="data/Sample_Dataset_2014.csv")
+```
+
+This code creates an object named `mydata` containing the data from this file as a data frame.
+
+
+## Step 2: Look at the data we imported into R
+
+How do we know if our import was successful?
+
+The following functions take a data frame as an argument, and return previews or summaries about that data frame:
+
+- View the dataframe as a spreadsheet using `View(mydata)`
+- Print variable types using function `str(mydata)` (str is short for **str**ucture)
+- Print minimum, maximum, median, missing values for all variables in dataframe using `summary(mydata)`
+- Print first 5 rows of dataframe using `head(mydata)`
+- Print last 5 rows of dataframe using `tail(mydata)`
+- Print names of variables in dataframe using `names(mydata)`
+
+## Tip
+
+Never use the `attach()` function, even if you see it in an online tutorial and it looks like it would make things easier.
+
+
+## Step 3: Access variables within our dataset
+
+- Variables are a named component of our dataframe
+- Some functions expect a dataframe; other functions expect a _vector_ of observations -- that is, a single, specific column from a dataframe
+
+When we need to access a column of a dataframe as a vector, we use the `$` operator:
+
+```{r eval=FALSE}
+mydata$varname
+```
+
+This syntax can be combined with the assignment operator to add new variables to a dataframe, or edit existing variables in a dataframe:
+
+```{r eval=FALSE}
+mydata$varname_times_ten <- mydata$varname*10
+```
+
+## Step 4: Access rows within our dataset
+
+Normally when we want to access specific rows, what we really want is to filter our data by some condition. We can do this using function `subset()`:
+
+```{r}
+freshmen_only <- subset(mydata, Rank==1)
+```
+
+The first argument to `subset` is the name of the dataframe. The second argument is a **logical condition** for which rows to keep (here, `Rank==1`, i.e. keep only freshman).
+
+
+# Working in R, part 2 | Summary statistics
+
+## Summary statistics for continuous numeric variables
+
+- `mean()`, `sd()`, `min()`, `max()`, `median()`, `sum()`
+    - The `na.rm=TRUE` argument
+- Base R graphics: `hist()`, `boxplot()`
+
+## Summary statistics for categorical variables
+
+- `table()`
+- `prop.table()`
+- Base R graphics: `barplot(table(...))`
+
+# Working in R, part 3 | Installing an R package for plotting
+
+## Installing package ggplot2
+
+- The ggplot2 package creates beautiful, publication-quality graphics using the _grammar of graphics_ syntax
+- To install the package:
+
+```{r eval=FALSE}
+install.packages("ggplot2")
+```
+
+## Loading package ggplot2
+
+After you've installed the package, you can load the package whenever you want to use it:
+
+```{r eval=FALSE}
+library(ggplot2)
+```
+
+We typically put these package loading statements at the start of our scripts.
+
+# Working in R, part 4 | Data analysis
+
+## Examples
+
+- Correlation using `cor`
+- Scatterplot using `ggplot2`
+- Linear regression using `lm()`
+
+# Questions?
+
+# Appendix A | R version used for this workshop
+
+## R version used for this workshop
+```{r echo=TRUE}
+sessionInfo()
+```
+
+

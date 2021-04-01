@@ -1,0 +1,91 @@
+---
+title: "The Benefits of Using R"
+author: "Kristin Yeager"
+date: "2/15/2021"
+output: 
+  html_document:
+    self_contained: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
+options(digits=2)
+
+
+library(ggplot2)
+library(knitr)
+
+myfilename <- "data/Sample_Dataset_2019.csv"
+mydata <- read.csv(file=myfilename)
+
+```
+
+
+## About this data
+
+_Note: This data was simulated using random number generation. Certain effects were built into the simulated data in order to create useful example cases. While care has been taken to make the data “look” real, it does NOT represent an actual study, and should not be used for any purpose outside of learning to use statistical software._
+
+This dataset contains survey results from **`r nrow(mydata)`** students enrolled at a university in the United States. The data was collected in **`r stringi::stri_extract_first_regex(myfilename, "[0-9]{4}")`**.
+
+- There were **`r nrow(subset(mydata, Gender==0))`** males and **`r nrow(subset(mydata, Gender==1))`** females
+
+
+## Do students who study more get less sleep?
+
+### Missing data
+
+- **`r sum(is.na(mydata$SleepTime))`** did not answer the sleep question
+- **`r sum(is.na(mydata$StudyTime))`** did not answer the study time question
+- **`r sum(is.na(mydata$Rank))`** did not give their class rank
+
+```{r}
+mydata <- subset(mydata, !is.na(SleepTime) & !is.na(StudyTime) & !is.na(Rank))
+```
+
+After removing observations with missing values, there were **`r nrow(mydata)`** responses.
+
+
+### Descriptive statistics
+
+- The average student slept **`r mean(mydata$SleepTime, na.rm=TRUE)`** hours per night (+/- **`r sd(mydata$SleepTime, na.rm=TRUE)`**)
+- One student slept as little as **`r min(mydata$SleepTime, na.rm=TRUE)`** hours per night
+- One student slept as many as **`r max(mydata$SleepTime, na.rm=TRUE)`** hours per night
+- Juniors and seniors tended to get less sleep and spend more time studying, on average, than freshman and sophomores
+
+```{r}
+mydata$Rank <- factor(mydata$Rank, levels=1:4,
+                      labels=c("Freshman",
+                               "Sophomore",
+                               "Junior",
+                               "Senior"))
+sumtab <- aggregate(cbind(SleepTime, StudyTime) ~ Rank, data=mydata, FUN=mean)
+knitr::kable(sumtab,
+             col.names=c("Class rank", "Mean hours sleep/night", "Mean hours studying/week"),
+             align=c("l", "r", "r"),
+             caption="Average sleep time and study time by class rank",
+             row.names=FALSE)
+```
+
+### Analysis
+
+Sleep time and commute time had a moderately negative correlation (_r_ = `r round(cor(mydata$CommuteTime, mydata$SleepTime, use="pairwise.complete.obs"), 3)`).
+
+
+```{r}
+ggplot(mydata, aes(x=SleepTime, y=StudyTime)) +
+  geom_point() +
+  geom_smooth(method="lm")
+```
+
+```{r}
+ggplot(mydata, aes(x=SleepTime, y=StudyTime, color=Rank)) +
+  geom_point() +
+  geom_smooth(method="lm")
+```
+
+```{r}
+mod1 <- lm(StudyTime ~ SleepTime + Rank, data=mydata)
+summary(mod1)
+```
+
+
