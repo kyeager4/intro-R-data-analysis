@@ -1,9 +1,10 @@
 ---
 title: "Intro to R for Data Analysis"
 author: "Kristin Yeager, Manager, Statistical Consulting"
-date: "February 15, 2021"
+date: "November 18, 2021"
 output: 
-  ioslides_presentation
+  ioslides_presentation:
+    css: myslides.css
 
     
 ---
@@ -16,7 +17,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - What is R, and why should I use it?
 - What is RStudio, and why should I use it?
-- Preview: The benefits of using R
 - Key terms
 - Worked example of the R workflow
     - Setting up RStudio project
@@ -44,12 +44,12 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Why use R?
 
 - Free and open-source
-- Reproducibility and _literate statistical programming_ (combining written report with the code used to generate tables, figures, analysis)
+- Reproducibility and communication (tools for combining written report with the code used to generate tables, figures, analysis)
 - Beautiful, publication-quality graphics (especially ggplot2)
-- Frequently the first place to find new and cutting-edge statistical methods (even before they're available in big-name stat software programs)
+- Frequently the first place to find new and cutting-edge statistical methods, often before they're available in big-name stat software programs
 - Large and active user community
     - Better free tutorials
-    - Active forums, social media community for seeking help
+    - Active forums and social media community with users at all experience levels
     - Opportunities to promote yourself professionally
 
 
@@ -70,22 +70,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <img src="./images/rstudio_ui_labeled.png" width="100%" style="border: 1px solid #000000;">
 
-## The R Workflow
-
-1. Obtain data and set up project directory
-2. Read/import data into R
-3. Data management
-    - Check data quality
-    - Compute new variables
-    - Filter rows
-    - Select columns
-4. Data analysis
-    - Descriptive statistics
-    - Plots
-    - Statistical tests and models
-
-# Preview: The benefits of using R | Fast-forwarding to when you're using R to its full potential
-
 
 # R syntax | Necessary vocabulary before we can get to the "good stuff"
 
@@ -101,13 +85,26 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - **Objects** are named "things" you've created in R -- can be manipulated, modified, plotted, etc.
 - Objects are created using the assignment operator: `<-`
+- There are MANY types of objects in R -- in this session, we'll be focusing on **dataframes** and **vectors**
+  - Dataframes are R's representation of the data set structure from the previous page
+  - Vectors are sets of numbers (or other data values) that operations can be applied to
+    - Each column within a dataframe is technically a vector
 
-Example: Create a new object called `new_object` whose value is equal to a constant:
-```{r eval=FALSE, echo=TRUE}
-new_object <- 10
+
+## Objects & Environment
+
+Example: Create new objects called `new_object` and `new_vector` and see what happens when we add them:
+```{r eval=TRUE, echo=TRUE}
+new_object <- 5
+print(new_object)
+
+new_vector <- c(3, 1, 1, 0)
+print(new_vector)
+
+new_vector + new_object
 ```
 
-There are different types of objects in R -- in this session, we'll be focusing on **dataframes** and **vectors**
+
 
 ## Objects & Environment
 - The **environment** is the collection of all R objects that have been defined during the current session <img src="./images/example-r-environment-rstudio.png" width="60%" style="border: 1px solid #000000; float: right;">
@@ -120,15 +117,26 @@ There are different types of objects in R -- in this session, we'll be focusing 
 - R syntax is generally driven by **functions**, which are pre-programmed tasks that R can do
 - Most (but not all) functions have **arguments** that can modify or control the behavior of the function
 
-Example: Compute the mean of a variable
+Example: Compute the mean of `new_vector` from a couple pages ago:
 ```{r eval=FALSE}
-mean(x=mydata$SleepTime, na.rm=TRUE)
+mean(x=new_vector, na.rm=TRUE)
 ```
 
 - `mean()` is the name of the function
 - `x` and `na.rm` are arguments of `mean()`
     - `x` is the vector of data to compute the mean of
     - `na.rm=TRUE` tells R to ignore any missing values in the input vector
+
+## Functions and arguments
+    
+Example: Compute the mean of `new_vector` from a couple pages ago:
+```{r eval=TRUE}
+#Reminder of the values of new_vector
+print(new_vector)
+
+mean(x=new_vector, na.rm=TRUE)
+```
+
 
 
 ## Functions and arguments
@@ -144,8 +152,10 @@ help("read.csv")
 ## R packages
 
 - R packages are user-created modules of code intended to fulfill a narrow task or purpose
-- Shared through repositories, of which CRAN is "main" one
+  - e.g. Reading Excel files into R, fitting zero-inflated negative binomial regression models, interfacing with web APIs, ...
+- Packages are shared through _repositories_, of which CRAN is "main" one
     - See [CRAN Task Views](https://cran.r-project.org/web/views/) to explore R packages by topic
+    - See also: [Bioconductor](https://www.bioconductor.org/)
 - An R user "installs" an R package from the online repository to their local package directory using the function `install.packages()`
 - Once a package has been installed, it can be used in your R scripts -- simply load the package using `library()`
 
@@ -160,23 +170,39 @@ Tutorial sample data:
 - Simulated survey dataset we use for our online tutorials
 - n=435 "college students"
 - Available in CSV, TXT, SAS, SPSS formats
-- Download from our website: [libguides.library.kent.edu/SPSS/](https://libguides.library.kent.edu/SPSS/) ([direct download link for CSV](https://libguides.library.kent.edu/ld.php?content_id=60015812))
+- Download from our website: [libguides.library.kent.edu/SPSS/](https://libguides.library.kent.edu/SPSS/) ([direct download link for CSV](https://libguides.library.kent.edu/ld.php?content_id=60015812), [direct download link for SPSS format](https://libguides.library.kent.edu/ld.php?content_id=64412583))
 
 Research questions we'll consider today:
 
-- Do students who study more get less sleep? (Or: do students who sleep more study less?)
+- Do students who study more get less sleep?
 - Do underclassmen (freshmen and sophomores) get less sleep than upperclassmen (juniors and seniors)?
+
+## The R Data Analysis Workflow {.smaller}
+
+1. Obtain data and set up project directory
+2. Read/import data into R
+    - Determine if special packages needed to read data
+3. Data management
+    - Check data quality
+    - Compute new variables
+    - Filter rows
+    - Select columns
+4. Data analysis
+    - Descriptive statistics
+    - Plots
+    - Statistical tests and models
 
 # Working in R, part 0 | Before you open the program
 
 ## Set up your project
 
-Create a project folder on your computer with the following subdirectories:
+We'll start by setting up a project folder, where everything related to this project (data, R scripts, output, etc) will go. In addition to staying organized, this will make it easier to write our scripts (and our scripts will be less likely to break if we move files around!)
+
+For a big project, consider using subdirectories inside your project folder to keep everything organized:
 
 - project
    - code
-   - data [raw]
-   - data ["processed"]
+   - data
    - plots
    - output
    - reports
@@ -184,15 +210,16 @@ Create a project folder on your computer with the following subdirectories:
 ## RStudio Projects
 
 - Reason to do this: Can declare a folder/directory on your computer as an "RStudio project"
-- Allows you to read and write files using relative paths instead of absolute paths
+- Allows you to read and write files using _relative paths_ instead of _absolute paths_
+  - Relative paths tell your computer what folder to start looking in for a given file
 
-Example: Absolute file path on Windows: <br/> `"C:/Users/yourusername/yourprojectfolder/data/mydata.csv"`
+Example: Absolute file path on Windows: <br/> `"C:/Users/yourusername/yourprojectfolder/mydata.csv"`
 
-Example: Absolute file path on Mac: <br/> `"/Users/yourusername/yourprojectfolder/data/mydata.csv"`
+Example: Absolute file path on Mac: <br/> `"/Users/yourusername/yourprojectfolder/mydata.csv"`
 
 
 Example: Relative file path after creating an RStudio project in the "yourprojectfolder" folder: <br/>
-`"data/mydata.csv"`
+`"mydata.csv"`
 
 # Working in R, part 1 | Importing text-based data
 
@@ -202,13 +229,25 @@ Example: Relative file path after creating an RStudio project in the "yourprojec
 - Base R function to import text and CSV files as a data frame: `read.table` or `read.csv`
 
 ```{r}
-mydata <- read.csv(file="data/Sample_Dataset_2014.csv")
+mydata <- read.csv(file="Sample_Dataset_2019.csv")
 ```
 
 This code creates an object named `mydata` containing the data from this file as a data frame.
 
+## Step 1: Get data into R
 
-## Step 2: Look at the data we imported into R
+- **What if the data isn't in CSV or plaintext format?**
+- Oftentimes, it is necessary (or simply a LOT easier) to find an R package that can read other data formats. Here's my package recommendations for some of the more common formats I see (generally easy to get working on Mac and Windows):
+  - Excel: `readxl`
+  - SAS, SPSS, and Stata 13+: `haven`
+  
+Example: Reading SPSS-format dataset into R using package `haven` (relative file path)
+```{r, eval=FALSE}
+library(haven)
+mydata <- haven::read_spss(file="Sample_Dataset_2019.sav")
+```
+  
+## Step 2: Look at the data we imported into R {.smaller}
 
 How do we know if our import was successful?
 
@@ -226,32 +265,40 @@ The following functions take a data frame as an argument, and return previews or
 Never use the `attach()` function, even if you see it in an online tutorial and it looks like it would make things easier.
 
 
-## Step 3: Access variables within our dataset
+## Step 3: Access variables within our dataset {.smaller}
 
-- Variables are a named component of our dataframe
 - Some functions expect a dataframe; other functions expect a _vector_ of observations -- that is, a single, specific column from a dataframe
+- Variables are simply a named vector inside our dataframe
 
-When we need to access a column of a dataframe as a vector, we use the `$` operator:
+When we need to access a column of a dataframe as a vector, we use the `$` operator to extract it:
 
 ```{r eval=FALSE}
-mydata$varname
+mydata$Mile
 ```
 
 This syntax can be combined with the assignment operator to add new variables to a dataframe, or edit existing variables in a dataframe:
 
 ```{r eval=FALSE}
-mydata$varname_times_ten <- mydata$varname*10
+mydata$Mile_minutes <- mydata$Mile/60
 ```
 
-## Step 4: Access rows within our dataset
+## Step 4: Subsetting rows or columns of our dataset {.smaller}
 
-Normally when we want to access specific rows, what we really want is to filter our data by some condition. We can do this using function `subset()`:
+Normally when we want to access specific **rows**, what we really want is to filter our data by some condition. We can do this using function `subset()`:
 
 ```{r}
-freshmen_only <- subset(mydata, Rank==1)
+freshmen_only <- subset(mydata, subset = Rank==1)
 ```
 
 The first argument to `subset` is the name of the dataframe. The second argument is a **logical condition** for which rows to keep (here, `Rank==1`, i.e. keep only freshman).
+
+If we instead want to drop or keep specific columns of our dataset, we can also use the subset function, but use its `select` argument:
+
+```{r}
+grade_data <- subset(mydata, select = English:Science)
+fitness_data <- subset(mydata, select = c(Athlete, Smoking, Mile))
+data_dropbday <- subset(mydata, select = -bday)
+```
 
 
 # Working in R, part 2 | Summary statistics
@@ -301,9 +348,11 @@ We typically put these package loading statements at the start of our scripts.
 
 # Appendix A | R version used for this workshop
 
-## R version used for this workshop
+## R version used for this workshop {.smaller}
 ```{r echo=TRUE}
-sessionInfo()
+devtools::session_info()[[1]]
+
+devtools::package_info(c("haven", "ggplot2"), dependencies=FALSE)
 ```
 
 
