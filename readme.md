@@ -1,8 +1,10 @@
-# Intro to R for Data Analysis Workshop (Spring 2021)
+# Intro to R for Data Analysis Workshop
 
-This repo contains code and data from my Spring 2021 Intro to R for Data Analysis workshop through the [training.kent.edu](https://training.kent.edu/) program.
+This repo contains code and data from my 2021 Intro to R for Data Analysis workshop through the [training.kent.edu](https://training.kent.edu/) program.
 
-**Date:** Monday, February 15, 2021 3:45 - 5:00pm
+**Dates:** 
+Monday, February 15, 2021 3:45 - 5:00pm
+Thursday, November 18, 2021 3:45 - 5:00pm
 
 **Title:** Introduction to R for Data Analysis
 
